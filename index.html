@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Online Metronome</title>
+  <meta name="description" content="">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+  <!-- Site icon -->
+  <link rel="icon" type="image/png" href="./site-icon.png">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" type="text/css" href="./css/style.css">
+  <link rel="stylesheet" type="text/css" href="./css/metronome.css">
+
+  <!-- JavaScript -->
+  <script type="module" src="./js/controller.js" defer></script>
+  <script type="module" src="./js/beepGenerator.js" defer></script>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="wrap">
+
+      <!-- Website Title -->
+      <div class="site-title">
+        <span>Online Metronome</span>
+      </div>
+
+    </div>
+  </header>
+  <!-- Main content -->
+  <main id="content">
+
+    <div id="metronome">
+      <div id="beat-indicators-box"></div>
+
+      <!-- Tempo Section -->
+      <div id="tempo-section">
+        <input type="number" id="bpm-display">
+
+        <div class="tempo-controls">
+          <button name="decrease-bpm" id="decrease-button" class="tempo-button">
+            <i class="fas fa-minus"></i>
+          </button>
+
+          <input type="range" min="10" max="250" step="1" id="bpm-selector">
+
+          <button name="increase-bpm" id="increase-button" class="tempo-button">
+            <i class="fas fa-plus"></i>
+          </button>
+        </div>
+      </div>
+
+      <ul id="time-signatures">
+        <li>
+          <button name="1-4" class="time-signature-button">1/4</button>
+        </li>
+        <li>
+          <button name="2-4" class="time-signature-button">2/4</button>
+        </li>
+        <li>
+          <button name="3-4" class="time-signature-button">3/4</button>
+        </li>
+        <li>
+          <button name="4-4" class="time-signature-button">4/4</button>
+        </li>
+      </ul>
+
+      <button name="play" id="play-button">
+        <i class="fas fa-play"></i>
+      </button>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="wrap">
+
+      <!-- Footer Credits -->
+      <span class="footer-credits">
+        Handcrafted by <a href="#" target="_blank" rel="nooper">Fabio Vinotti</a>
+      </span>
+
+    </div>
+  </footer>
+
+</body>
+</html>

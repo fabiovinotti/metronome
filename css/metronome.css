@@ -1,0 +1,147 @@
+@charset "UTF-8";
+
+/* Metronome
+------------------------------------------------*/
+
+#metronome {
+  width: 100%;
+  max-width: 800px;
+  height: auto;
+  border: 8px solid #2b2b2b;
+  border-radius: 80px;
+  margin: auto;
+  background-color: #1b1c1f;
+  font-family: sans-serif;
+}
+
+#metronome button,
+#metronome input {
+  outline: none;
+  padding: 0;
+  border: 0;
+}
+
+#metronome button { cursor: pointer; }
+
+/* Dots
+-----------------------------------------*/
+
+#metronome #beat-indicators-box {
+  height: 135px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#metronome #beat-indicators-box .beat-indicator {
+  width: 27px;
+  height: 27px;
+  border: 0;
+  border-radius: 12.5px;
+  background-color: #3e9c5a;
+  margin-right: 25px;
+}
+
+#metronome #beat-indicators-box .beat-indicator:last-child { margin-right: 0; }
+
+#metronome #beat-indicators-box .beat-indicator.highlighted {
+  background: rgb(236, 64, 103);
+}
+
+/* Tempo
+-----------------------------------------*/
+#metronome #tempo-section {
+  width: 100%;
+  background-color: #212327;
+}
+
+#metronome #tempo-section #bpm-display {
+  width: 100%;
+  height: 80px;
+  background-color: inherit;
+  font-size: 40px;
+  font-family: inherit;
+  text-align: center;
+  color: #fff;
+}
+
+/* Tempo Controls
+--------------------------*/
+
+#metronome .tempo-controls {
+  width: 95%;
+  height: 40px;
+  box-sizing: border-box;
+  padding: 0 60px;
+  position: relative;
+  margin: auto;
+}
+
+#metronome #decrease-button { left: 0; }
+
+#metronome #increase-button { right: 0; }
+
+#metronome .tempo-button {
+  width: 40px;
+  height: 40px;
+  background-color: #3e9c5a;
+  position: absolute;
+  top: 0;
+  border-radius: 5px;
+}
+
+#metronome .tempo-button:hover { background: #43af63; }
+
+#metronome #tempo-section i {
+  text-align: center;
+  font-size: 15px;
+  color: #fff;
+}
+
+#metronome .tempo-controls input {
+  width: 100%;
+  height: 40px;
+  margin: 0;
+}
+
+/* Time Signature
+-----------------------------------------*/
+
+#metronome #time-signatures {
+  width: 100%;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+#metronome #time-signatures button {
+  background-color: transparent;
+  padding: 10px 15px;
+  font-size: 22.5px;
+  color: #fff;
+}
+
+#metronome #time-signatures button:hover {
+  border-bottom: 2px solid #43af63;
+}
+
+#metronome #time-signatures button.selected {
+  border-bottom: 2px solid #3e9c5a;
+}
+
+/* Play button
+-----------------------------------------*/
+#metronome #play-button {
+  width: 115px;
+  height: 115px;
+  background-color: transparent;
+  margin: 0 30px 30px 30px;
+  padding-left: 12px;
+  color: #3e9c5a;
+}
+
+#metronome #play-button:hover { color: #43af63; }
+
+#metronome #play-button i { font-size: 65px; }
