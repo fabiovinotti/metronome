@@ -138,9 +138,9 @@ const metronomeController = new Controller({
 
       let frequency;
       if ( hasToBeStressed ) {
-        frequency = 880;
+        frequency = 1760;
       } else {
-        frequency = 440;
+        frequency = 880;
       }
 
       EventChannel.publish( 'scheduledBeep', executionTime, frequency );
