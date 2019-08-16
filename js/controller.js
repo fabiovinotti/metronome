@@ -1,4 +1,4 @@
-import { Controller, EventChannel } from './skeleton.js';
+import { Controller, EventChannel } from '../node_modules/baskel/baskel.js';
 import { store } from './store.js';
 import { metronomeModel } from './model.js';
 import { metronomeView } from './view.js';

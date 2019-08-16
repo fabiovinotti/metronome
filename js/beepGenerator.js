@@ -1,4 +1,4 @@
-import { EventChannel } from './skeleton.js';
+import { EventChannel } from '../node_modules/baskel/baskel.js';
 import { store } from './store.js';
 
 export const beepGenerator = (function() {

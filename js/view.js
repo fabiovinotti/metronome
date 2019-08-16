@@ -1,4 +1,4 @@
-import { View } from './skeleton.js';
+import { View } from '../node_modules/baskel/baskel.js';
 
 export const metronomeView = new View({
 
@@ -57,11 +57,12 @@ export const metronomeView = new View({
       const timeSignatureButtons = this.timeSignaturesBox.children;
 
       for (let elt of timeSignatureButtons) {
-        if ( elt.name === rightTimeSignature ) {
-          elt.classList.add('selected')
+        const button = elt.firstElementChild;
+        if ( button.name === rightTimeSignature ) {
+          button.classList.add( 'selected' );
         }
-        else if ( elt.classList.contains( 'selected' ) ) {
-          elt.classList.remove( 'selected' );
+        else if ( button.classList.contains( 'selected' ) ) {
+          button.classList.remove( 'selected' );
         }
       }
     },

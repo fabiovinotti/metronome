@@ -1,4 +1,4 @@
-import { Model } from './skeleton.js';
+import { Model } from '../node_modules/baskel/baskel.js';
 
 export const metronomeModel = new Model({
 
