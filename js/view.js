@@ -8,9 +8,9 @@ export const metronomeView = new View({
 
     bpmDisplay: '#bpm-display',
     bpmRangeSelector: '#bpm-selector',
-    decreaseButton: '#metronome .decrease',
-    increaseButton: '#metronome .increase',
-    timeSignaturesBox: '#time-signatures',
+    decreaseButton: '#decrease-button',
+    increaseButton: '#increase-button',
+    timeSignaturesBox: '#time-signature-buttons',
     playButton: '#play-button'
 
   },
