@@ -7,7 +7,7 @@ export const metronomeModel = new Model({
     bpm: 120,
     timeSignature: [4,4],
     lastExecutionTime: 0,
-    emittedBeepCount: 0,
+    currentBeat: null,
   },
 
   getters: {

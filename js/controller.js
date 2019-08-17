@@ -10,10 +10,21 @@ const metronomeController = new Controller({
 
   init: function() {
     // Notification Listeners
-    EventChannel.subscribe( 'beepPlayed', this.view.highlightNextBeatIndicator, this.view );
+    EventChannel.subscribe( 'beepPlayed', () => {
+      const beatsPerMeasure = this.model.beatsPerMeasure;
+      const currentBeat = this.model.currentBeat;
+      this.view.renderBeatIndicatorsBox( beatsPerMeasure, currentBeat );
+
+      if ( this.model.currentBeat + 1 < this.model.beatsPerMeasure ) {
+        this.model.currentBeat++;
+      } else {
+        this.model.currentBeat = 0;
+      }
+
+    }, this.view );
 
     // Initialize the view
-    this.view.displayBeatIndicators( this.model.beatsPerMeasure );
+    this.view.renderBeatIndicatorsBox( this.model.beatsPerMeasure );
     this.view.displayBpm( this.model.bpm );
     this.view.highlightTimeSignatureButton( this.model.timeSignature );
   },
@@ -25,11 +36,11 @@ const metronomeController = new Controller({
     },
 
     'bpm': function() {
-      this.view.displayBpm( this.model.bpm )
+      this.view.displayBpm( this.model.bpm );
     },
 
     'timeSignature': function() {
-      this.view.displayBeatIndicators( this.model.beatsPerMeasure );
+      this.view.renderBeatIndicatorsBox( this.model.beatsPerMeasure, this.model.currentBeat );
       this.view.highlightTimeSignatureButton( this.model.timeSignature );
     }
 
@@ -50,13 +61,16 @@ const metronomeController = new Controller({
     },
 
     'mousedown .time-signature-button': function( evt ) {
-      if ( this.model.isPlaying ) {
-        this.stopMetronome();
-      }
-
       const beatsPerMeasure = Number( evt.target.name[0] );
-      const measureLength = Number( evt.target.name[2] );
-      this.model.timeSignature = [beatsPerMeasure, measureLength];
+      const beatDuration = Number( evt.target.name[2] );
+      const timeSignature = [beatsPerMeasure, beatDuration];
+
+      if ( this.model.timeSignature !== timeSignature ) {
+        this.model.timeSignature = timeSignature;
+        if ( this.model.currentBeat >= beatsPerMeasure ) {
+          this.model.currentBeat = 0;
+        }
+      }
     },
 
     'mousedown #play-button': function( evt ) {
@@ -95,6 +109,7 @@ const metronomeController = new Controller({
     startMetronome() {
       this.model.isPlaying = true;
       this.model.lastExecutionTime = store.audioContext.currentTime - this.model.BeatDuration;
+      this.model.currentBeat = 0;
       this.checkIfTimeToSchedule();
     },
 
@@ -111,7 +126,6 @@ const metronomeController = new Controller({
         const hasToBeStressed = this.checkIfStressed();
         this.scheduleBeepExecution( nextExecutionTime, hasToBeStressed );
         this.model.lastExecutionTime = nextExecutionTime;
-        this.model.emittedBeepCount++;
 
       }
 
@@ -124,7 +138,7 @@ const metronomeController = new Controller({
     checkIfStressed() {
 
       let hasToBeStressed;
-      if ( this.model.emittedBeepCount % this.model.beatsPerMeasure === 0 ) {
+      if ( this.model.currentBeat === 0 ) {
         hasToBeStressed = true;
       }
       else {

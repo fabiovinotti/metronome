@@ -6,7 +6,6 @@ export const metronomeView = new View({
 
   elements: {
 
-    beatIndicatorsBox: '#beat-indicators-box',
     bpmDisplay: '#bpm-display',
     bpmRangeSelector: '#bpm-selector',
     decreaseButton: '#metronome .decrease',
@@ -35,20 +34,25 @@ export const metronomeView = new View({
       this.bpmDisplay.value = this.bpmRangeSelector.value = bpm;
     },
 
-    displayBeatIndicators( howManyBeat ) {
-      const documentFragment = document.createDocumentFragment();
+    renderBeatIndicatorsBox( howManyBeat, beatToHighlight ) {
 
-      while ( this.beatIndicatorsBox.firstChild ) {
-        this.beatIndicatorsBox.removeChild( this.beatIndicatorsBox.firstChild );
-      }
+      const beatIndicatorsBox = document.createElement( 'div' );
+      beatIndicatorsBox.id = 'beat-indicators-box';
 
-      for (let i = 0; i < howManyBeat; i++) {
-        const beatIndicator = document.createElement('div');
+      for ( let i = 0; i < howManyBeat; i++ ) {
+        const beatIndicator = document.createElement( 'div' );
         beatIndicator.className = 'beat-indicator';
-        documentFragment.appendChild( beatIndicator );
+
+        if ( i === beatToHighlight ) {
+          beatIndicator.classList.add( 'highlighted' );
+        }
+
+        beatIndicatorsBox.appendChild( beatIndicator );
       }
 
-      this.beatIndicatorsBox.appendChild( documentFragment );
+      this.querySelector( '#beat-indicators-box' ).remove();
+
+      this.baseElement.insertBefore( beatIndicatorsBox, this.baseElement.firstChild );
 
     },
 
@@ -75,40 +79,6 @@ export const metronomeView = new View({
     displayStopButton() {
       this.playButton.style.paddingLeft = '0';
       this.playButton.innerHTML = '<i class="fas fa-stop"></i>';
-    },
-
-    highlightNextBeatIndicator() {
-      const beatIndicatorsBox = this.beatIndicatorsBox;
-      const beatIndicators = Array.from( beatIndicatorsBox.querySelectorAll( '.beat-indicator' ) );
-      const highlightedIndex = beatIndicators.findIndex( indicator => indicator.classList.contains( 'highlighted' ) );
-
-      if ( highlightedIndex > -1 ) { // -1 = nothing found.
-        let nextIndicator;
-        beatIndicators[highlightedIndex].classList.remove( 'highlighted' );
-
-        if ( highlightedIndex === beatIndicators.length - 1 ) {
-          nextIndicator = beatIndicators[0];
-        }
-        else {
-          nextIndicator = beatIndicators[highlightedIndex + 1];
-        }
-
-        nextIndicator.classList.add( 'highlighted' );
-
-      } else {
-        beatIndicators[0].classList.add( 'highlighted' );
-      }
-
-    },
-
-    resetBeatIndicatorsColor() {
-      const beatIndicatorsBox = this.beatIndicatorsBox;
-      const beatIndicators = beatIndicatorsBox.querySelectorAll( '.beat-indicator' );
-      for (let beatIndicator of beatIndicators) {
-        if ( beatIndicator.classList.contains( 'highlighted' ) ) {
-          beatIndicator.classList.remove( 'highlighted' );
-        }
-      }
     }
 
   }
