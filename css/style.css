@@ -1,5 +1,5 @@
 @charset "UTF-8";
-@import url('https://fonts.googleapis.com/css?family=Quicksand:300,400,500&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Quicksand:400,500&display=swap');
 
 body {
   width: 100%;
@@ -23,6 +23,16 @@ ul {
   padding: 0;
   margin: 0;
 }
+
+button,
+input {
+  outline: none;
+  padding: 0;
+  border: 0;
+  font-family: inherit;
+}
+
+button { cursor: pointer; }
 
 /* Wrap
 ---------------------------------------------------*/
@@ -72,9 +82,154 @@ nav a {
 main {
   width: 100%;
   min-height: calc(100vh - 65px - 70px);
+  padding: 0 15px;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
 }
+
+/* Metronome
+---------------------------------------------------*/
+
+#metronome {
+  width: 100%;
+  max-width: 800px;
+  height: auto;
+  border: 8px solid #353b46;
+  border-radius: 50px;
+  margin: auto;
+  background-color: #2a2c2f;
+}
+
+/* Beat Indicators Box
+-------------------------------*/
+
+#beat-indicators-box {
+  height: 135px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#beat-indicators-box .beat-indicator {
+  width: 27px;
+  height: 27px;
+  border: 0;
+  border-radius: 12.5px;
+  background-color: #3e9c5a;
+  margin-right: 25px;
+}
+
+#beat-indicators-box .beat-indicator:last-child { margin-right: 0; }
+
+#beat-indicators-box .beat-indicator.highlighted {
+  background: rgb(236, 64, 103);
+}
+
+/* Tempo
+-------------------------------*/
+#tempo-section {
+  width: 100%;
+  background-color: #353b46;
+}
+
+#tempo-section #bpm-display {
+  width: 100%;
+  height: 80px;
+  background-color: inherit;
+  font-size: 40px;
+  font-family: inherit;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-align: center;
+  color: #fff;
+}
+
+#tempo-section .controllers {
+  width: 100%;
+  height: 40px;
+  border-top: 1px solid #2a2c2f;
+  box-sizing: border-box;
+  padding: 0 60px;
+  position: relative;
+  margin: auto;
+}
+
+#tempo-section .controllers input {
+  width: 100%;
+  height: 40px;
+  margin: 0;
+}
+
+#decrease-button {
+  left: 0;
+  border-radius: 5px 18px 18px 5px;
+}
+
+#increase-button {
+  right: 0;
+  border-radius: 18px 5px 5px 18px;
+}
+
+#tempo-section .tempo-button {
+  width: 40px;
+  height: 40px;
+  background-color: #3e9c5a;
+  position: absolute;
+  top: 0;
+}
+
+#temp-section .tempo-button:hover { background: #43af63; }
+
+#tempo-section i {
+  text-align: center;
+  font-size: 15px;
+  color: #fff;
+}
+
+/* Time Signature Buttons
+-------------------------------*/
+
+#time-signature-buttons {
+  width: 100%;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+#time-signature-buttons button {
+  background-color: transparent;
+  padding: 10px 15px;
+  font-size: 22.5px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  color: #fff;
+}
+
+#time-signature-buttons button:hover {
+  border-bottom: 2px solid #43af63;
+}
+
+#time-signature-buttons button.selected {
+  border-bottom: 2px solid #3e9c5a;
+}
+
+/* Play button
+-------------------------------*/
+#play-button {
+  width: 115px;
+  height: 115px;
+  background-color: transparent;
+  margin: 0 30px 30px 30px;
+  padding-left: 12px;
+  color: #3e9c5a;
+}
+
+#play-button:hover { color: #43af63; }
+
+#play-button i { font-size: 65px; }
 
 /* Footer
 ---------------------------------------------------*/
@@ -97,9 +252,6 @@ footer .wrap {
 .footer-credits a {
   text-decoration: none;
   color: inherit;
-}
-
-.footer-credits a:hover {
   border-bottom: 1px solid #fff;
 }
 
