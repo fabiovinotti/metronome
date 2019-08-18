@@ -95,7 +95,7 @@ const metronomeController = new Controller({
     },
 
     'change #bpm-selector': function() {
-      this.model.bpm = this.view.bpmRangeSelector.value;
+      this.model.bpm = Number( this.view.bpmRangeSelector.value );
     },
 
     'input #bpm-selector': function() {
