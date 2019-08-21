@@ -1,4 +1,4 @@
-import { EventChannel } from '../node_modules/baskel/baskel.js';
+import { CustomEvents } from '../node_modules/baskel/baskel.js';
 import { store } from './store.js';
 
 export const beepGenerator = (function() {
@@ -9,7 +9,7 @@ export const beepGenerator = (function() {
     oscillator = context.createOscillator();
     oscillator.type = 'sine';
     oscillator.frequency.value = frequency;
-    oscillator.onended = () => EventChannel.publish( 'beepPlayed' );
+    oscillator.onended = () => CustomEvents.dispatch( 'beepPlayed' );
     oscillator.connect( context.destination );
   }
 
@@ -24,4 +24,4 @@ export const beepGenerator = (function() {
   };
 
 })();
-EventChannel.subscribe( 'scheduledBeep', beepGenerator.play );
+CustomEvents.on( 'scheduledBeep', beepGenerator.play );
