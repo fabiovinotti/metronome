@@ -37,25 +37,11 @@
 
   <main id="content">
 
-    <div id="metronome">
+    <event-handler id="metronome">
       <div id="beat-indicators-box"></div>
 
-      <!-- Tempo Section -->
-      <div id="tempo-section">
-        <input type="number" id="bpm-display">
-
-        <div class="controllers">
-          <button name="decrease-bpm" id="decrease-button" class="tempo-button">
-            <i class="fas fa-minus"></i>
-          </button>
-
-          <input type="range" min="10" max="250" step="1" id="bpm-selector">
-
-          <button name="increase-bpm" id="increase-button" class="tempo-button">
-            <i class="fas fa-plus"></i>
-          </button>
-        </div>
-      </div>
+      <number-field id="bpm-display" min="10" max="250" step="1" show-controls></number-field>
+      <input type="range" min="10" max="250" step="1" id="bpm-selector">
 
       <ul id="time-signature-buttons">
         <li>
@@ -72,11 +58,8 @@
         </li>
       </ul>
 
-      <button name="play" id="play-button">
-        <i class="fas fa-play"></i>
-      </button>
-    </div>
-
+      <keen-button toggles>Start</keen-button>
+    </event-handler>
   </main>
 
   <footer>

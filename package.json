@@ -1,6 +1,6 @@
 {
   "name": "metronome",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "",
   "main": "js/main.js",
   "scripts": {
@@ -15,7 +15,5 @@
   "bugs": {
     "url": "https://github.com/fabiovinotti/metronome/issues"
   },
-  "dependencies": {
-    "baskel": "^0.1.2"
-  }
+  "dependencies": {}
 }

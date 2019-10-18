@@ -92,6 +92,7 @@ main {
 ---------------------------------------------------*/
 
 #metronome {
+  display: block;
   width: 100%;
   max-width: 800px;
   height: auto;
@@ -128,63 +129,30 @@ main {
 
 /* Tempo
 -------------------------------*/
-#tempo-section {
-  width: 100%;
+#bpm-display,
+#bpm-selector {
   background-color: #353b46;
 }
 
-#tempo-section #bpm-display {
+#bpm-display {
   width: 100%;
   height: 80px;
-  background-color: inherit;
   font-size: 40px;
   font-family: inherit;
   font-weight: 500;
   letter-spacing: 1px;
   text-align: center;
   color: #fff;
+  --buttons-hover-color: #fff;
+  border-radius: 0;
 }
 
-#tempo-section .controllers {
-  width: 100%;
-  height: 40px;
-  border-top: 1px solid #2a2c2f;
+#bpm-selector {
+  display: block;
+  width: calc(100% - 40px);
   box-sizing: border-box;
-  padding: 0 60px;
-  position: relative;
-  margin: auto;
-}
-
-#tempo-section .controllers input {
-  width: 100%;
-  height: 40px;
-  margin: 0;
-}
-
-#decrease-button {
-  left: 0;
-  border-radius: 5px 18px 18px 5px;
-}
-
-#increase-button {
-  right: 0;
-  border-radius: 18px 5px 5px 18px;
-}
-
-#tempo-section .tempo-button {
-  width: 40px;
-  height: 40px;
-  background-color: #3e9c5a;
-  position: absolute;
-  top: 0;
-}
-
-#temp-section .tempo-button:hover { background: #43af63; }
-
-#tempo-section i {
-  text-align: center;
-  font-size: 15px;
-  color: #fff;
+  padding: 10px 0;
+  margin: 0 20px;
 }
 
 /* Time Signature Buttons
@@ -216,20 +184,19 @@ main {
   border-bottom: 2px solid #3e9c5a;
 }
 
-/* Play button
--------------------------------*/
-#play-button {
-  width: 115px;
-  height: 115px;
-  background-color: transparent;
-  margin: 0 30px 30px 30px;
-  padding-left: 12px;
+keen-button {
+  background-color: #353b46;
+  margin: 20px 30px 30px 30px;
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 30px;
   color: #3e9c5a;
 }
 
-#play-button:hover { color: #43af63; }
-
-#play-button i { font-size: 65px; }
+keen-button[active] {
+  background-color: rgb(236, 64, 103);
+  color: #fff;
+}
 
 /* Footer
 ---------------------------------------------------*/
