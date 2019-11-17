@@ -3,6 +3,8 @@ import { KeenElement, html } from '../dependencies/keen-element/index.js';
 class NumberField extends KeenElement {
   constructor() {
     super();
+    this._inputElement = this.shadowRoot.querySelector('input');
+    this._inputEvent = new Event('input', { 'bubbles': true, 'cancelable': false });
     this._changeEvent = new Event('change', { 'bubbles': true, 'cancelable': false });
   }
 
@@ -30,7 +32,7 @@ class NumberField extends KeenElement {
       this.value = this.getAttribute('value');
     }
 
-    this.retrieve('input').addEventListener('change', this._onchange_input.bind(this));
+    this._inputElement.addEventListener('change', this._onchange_input.bind(this));
   }
 
   _onchange_input() {
@@ -54,6 +56,8 @@ class NumberField extends KeenElement {
     const step = Number(this.step) || 1;
     const value = Number(this.value);
 
+    this.dispatchEvent(this._inputEvent);
+
     if (buttonId === 'decrease-button') {
 
       const newValue = value - step;
@@ -74,10 +78,10 @@ class NumberField extends KeenElement {
   }
 
   get value() {
-    return this.retrieve('input').value;
+    return this._inputElement.value;
   }
   set value(value) {
-    this.retrieve('input').value = value;
+    this._inputElement.value = value;
   }
 
   get step() {
@@ -111,7 +115,7 @@ class NumberField extends KeenElement {
       flex-wrap: no-wrap;
       align-item: center;
       user-select: none;
-      background-color: #f3f5fe;
+      background-color: #ebedf2;
       border-radius: 5px;
       font-size: 16px;
       color: #4b5c7e;

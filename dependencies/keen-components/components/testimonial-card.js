@@ -42,12 +42,12 @@ class TestimonialCard extends KeenElement {
     return `
     :host {
       display: inline-block;
-      border-radius: 5px;
+      border-radius: 4px;
       font-size: 16px;
       font-weight: normal;
       text-align: left;
       line-height: 1.5;
-      box-shadow: 0 3px 6px 0 rgba(140, 152, 164, 0.25);
+      box-shadow: 0 0 13px 0 rgba(82, 63, 105, 0.1);
       background-color: #fff;
     }
 
