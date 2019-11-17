@@ -30,11 +30,11 @@ class KeenButton extends KeenElement {
       overflow: hidden;
       outline: none;
       width: auto;
-      background-color: var(--button-color, #377dff);
+      background-color: var(--button-color, #3699ff);
       color: var(--button-text-color, #fff);
       padding: 12px 16px;
       border: 0;
-      border-radius: 5px;
+      border-radius: 3.25px;
       text-decoration: none;
       font-size: 16px;
       font-weight: 400;
@@ -47,7 +47,7 @@ class KeenButton extends KeenElement {
 
     :host(:hover) {
       cursor: pointer;
-      box-shadow: 0 4px 11px rgba(55, 125, 255, 0.35);
+      box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 11px;
     }
 
     :host::before {
