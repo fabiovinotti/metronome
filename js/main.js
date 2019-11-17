@@ -2,6 +2,7 @@ import { CustomEvents } from './custom-events.js';
 import '../dependencies/keen-components/components/event-handler.js';
 import '../dependencies/keen-components/components/keen-button.js';
 import '../dependencies/keen-components/components/number-field.js';
+import '../dependencies/keen-components/components/keen-slider.js';
 import { store } from './store.js';
 
 /*-- Cached Elements --*/
