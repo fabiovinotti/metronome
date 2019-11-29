@@ -1,4 +1,4 @@
-import { KeenElement, html } from '../dependencies/keen-element/index.js';
+import { KeenElement } from '../dependencies/keen-element.js';
 
 class KeenSlider extends KeenElement {
   constructor() {
@@ -6,7 +6,7 @@ class KeenSlider extends KeenElement {
     this._value = 0;
     this.min = 0;
     this.max = 100;
-    this._manageUserInput = this._manageUserInput.bind(this);
+    this._onSliding = this._onSliding.bind(this);
     this._onMouseUp = this._onMouseUp.bind(this);
 
     /* Cached Elements */
@@ -32,19 +32,78 @@ class KeenSlider extends KeenElement {
       this.max = Number(this.getAttribute('max'));
     }
 
-    this.addEventListener('mousedown', evt => {
-      if (evt.button !== 0) return;
-
-      this._manageUserInput(evt);
-      window.addEventListener('mousemove', this._manageUserInput);
-      window.addEventListener('mouseup', this._onMouseUp);
-    });
+    this.addEventListener('mousedown', this._onMouseDown);
+    this.addEventListener('touchstart', this._onTouchStart);
 
     this._displayProgress();
   }
 
+  _onMouseDown(evt) {
+    if (evt.button !== 0) return;
+    this._onSliding(evt);
+    window.addEventListener('mousemove', this._onSliding);
+    window.addEventListener('mouseup', this._onMouseUp);
+  }
+
+  _onMouseUp(evt) {
+    if (evt.button !== 0) return;
+    window.removeEventListener('mousemove', this._onSliding);
+    window.removeEventListener('mouseup', this._onMouseUp);
+    this.dispatchEvent(this._changeEvent);
+  }
+
+  _onTouchStart(evt) {
+    this._onSliding(evt);
+    this.addEventListener('touchmove', this._onSliding);
+    this.addEventListener('touchend', this._onTouchEnd);
+    evt.preventDefault();
+  }
+
+  _onTouchEnd() {
+    this.removeEventListener('touchmove', this._onTouchMove);
+    this.removeEventListener('touchend', this._onTouchEnd);
+    this.dispatchEvent(this._changeEvent);
+  }
+
+  _onSliding(evt) {
+    const progressBarOffset = this._progressBar.getBoundingClientRect();
+    const progressMaxLenght = progressBarOffset.width - 9;
+    let pointerClientX;
+
+    if (evt.type === 'touchmove' || evt.type === 'touchstart') pointerClientX = evt.touches[0].clientX;
+    else pointerClientX = evt.clientX;
+
+    // Compute new progress length.
+    let newProgressLength = Math.floor(pointerClientX - progressBarOffset.left);
+    if (newProgressLength < 9) {
+      newProgressLength = 9;
+    } else if (newProgressLength > progressMaxLenght) {
+      newProgressLength = progressMaxLenght;
+    }
+
+    /* Update Value */
+    const decimalPortion = (newProgressLength - 9) / (progressMaxLenght - 9);
+    this._value = Math.floor(decimalPortion * (this.max - this.min) + this.min);
+
+    this._updateUIElementStyles(newProgressLength);
+    this.dispatchEvent(this._inputEvent);
+    if (evt.type === 'touchmove') evt.preventDefault();
+  }
+
+  _displayProgress() {
+    const decimalPortion = (this._value - this.min) / (this.max - this.min);
+    const progressMaxLenght = this._progressBar.getBoundingClientRect().width - 18;
+    const newProgressLength = (progressMaxLenght * decimalPortion) + 9;
+    this._updateUIElementStyles(newProgressLength);
+  }
+
+  _updateUIElementStyles(newProgressLength) {
+    this._progressLine.style.width = newProgressLength + 'px';
+    this._knob.style.transform = `translateX(${newProgressLength}px)`;
+  }
+
   set value(newValue) {
-    if (this._value === newValue) {
+    if (newValue === this._value) {
       return;
     } else if (newValue < this.min) {
       newValue = this.min;
@@ -59,52 +118,8 @@ class KeenSlider extends KeenElement {
     return this._value;
   }
 
-  _manageUserInput(evt) {
-    const progressBarOffset = this._progressBar.getBoundingClientRect();
-    const progressLineLength = this._computeProgressLineLenght(evt.clientX - 9, progressBarOffset.left, progressBarOffset.width - 18);
-
-    this._value = this._computeValueByUi(progressLineLength, progressBarOffset.width - 18);
-
-    /* Update the width of the progress line element */
-    this._progressLine.style.width = `${progressLineLength}px`;
-    this._knob.style.left = `${progressLineLength}px`;
-
-    this.dispatchEvent(this._inputEvent);
-  }
-
-  _computeProgressLineLenght(mouseClientX, progressBarOffsetLeft, progressBarWidth) {
-    let progressLineLength = mouseClientX - progressBarOffsetLeft;
-
-    if (progressLineLength < 0) {
-      progressLineLength = 0;
-    } else if (progressLineLength > progressBarWidth) {
-      progressLineLength = progressBarWidth;
-    }
-
-    return progressLineLength;
-  }
-
-  _computeValueByUi(progressLineLength, progressBarWidth) {
-    const decimalPortion = progressLineLength / progressBarWidth;
-    const newValue = decimalPortion * (this.max - this.min) + this.min;
-    return Math.floor(newValue);
-  }
-
-  _onMouseUp() {
-    window.removeEventListener('mousemove', this._manageUserInput);
-    window.removeEventListener('mouseup', this._onMouseUp);
-    this.dispatchEvent(this._changeEvent);
-  }
-
-  _displayProgress() {
-    const decimalPortion = (this._value - this.min) / (this.max - this.min);
-    const progressBarWidth = this._progressBar.getBoundingClientRect().width - 18;
-    this._progressLine.style.width = `${progressBarWidth * decimalPortion}px`;
-    this._knob.style.left = `${progressBarWidth * decimalPortion}px`;
-  }
-
   template() {
-    return html`
+    return `
     <div id="progress-bar">
       <div id="progress"></div>
     </div>
@@ -136,7 +151,7 @@ class KeenSlider extends KeenElement {
 
     #progress {
       width: 0;
-      background-color: var(--progress-color, #3699ff);
+      background-color: var(--slider-progress-color, #3699ff);
       border-radius: 2px 0 0 2px;
     }
 

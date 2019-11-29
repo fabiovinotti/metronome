@@ -1,4 +1,4 @@
-import { html, KeenElement } from '../dependencies/keen-element/index.js';
+import { KeenElement } from '../dependencies/keen-element.js';
 
 class TestimonialCard extends KeenElement {
   constructor() {
@@ -28,7 +28,7 @@ class TestimonialCard extends KeenElement {
   }
 
   template() {
-    return html`
+    return `
     <blockquote><slot></slot></blockquote>
     <div id="testimonial-info">
       <div>

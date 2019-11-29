@@ -1,26 +1,41 @@
-import { html, KeenElement } from '../dependencies/keen-element/index.js';
+import { KeenElement } from '../dependencies/keen-element.js';
 
 class KeenButton extends KeenElement {
   constructor() {
     super();
+    this._changeEvent = new Event('change', { 'bubbles': true, 'cancelable': false });
   }
 
   whenConnected() {
     if (this.hasAttribute('toggles')) {
-      this.addEventListener('mousedown', evt => {
-        if (evt.button !== 0) return;
+      this.addEventListener('click', evt => {
+        if (evt.button === 0) this._toggle();
+      });
 
-        if (this.hasAttribute('active')) {
-          this.removeAttribute('active');
-        } else {
-          this.setAttribute('active', '');
-        }
+      this.addEventListener('touchstart', evt => {
+        this.addEventListener('touchend', evt.target._onTouchEnd);
       });
     }
   }
 
+  _onTouchEnd(evt) {
+    this._toggle();
+    this.removeEventListener('touchend', this._onTouchEnd);
+    evt.preventDefault();
+  }
+
+  _toggle() {
+    if (this.hasAttribute('active')) {
+      this.removeAttribute('active');
+    } else {
+      this.setAttribute('active', '');
+    }
+
+    this.dispatchEvent(this._changeEvent);
+  }
+
   template() {
-    return html`<slot>No content provided</slot>`;
+    return '<slot>No content provided</slot>';
   }
 
   styles() {
@@ -42,6 +57,7 @@ class KeenButton extends KeenElement {
       white-space: nowrap;
       position: relative;
       user-select: none;
+      -webkit-user-select: none;
       transition: all 0.2s ease-in-out;
     }
 

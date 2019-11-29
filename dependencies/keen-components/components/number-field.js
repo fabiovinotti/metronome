@@ -1,14 +1,23 @@
-import { KeenElement, html } from '../dependencies/keen-element/index.js';
+import { KeenElement } from '../dependencies/keen-element.js';
 
 class NumberField extends KeenElement {
   constructor() {
     super();
+    this.step = 1;
     this._inputElement = this.shadowRoot.querySelector('input');
     this._inputEvent = new Event('input', { 'bubbles': true, 'cancelable': false });
     this._changeEvent = new Event('change', { 'bubbles': true, 'cancelable': false });
   }
 
   whenConnected() {
+    if (this.hasAttribute('value')) {
+      this.value = this.getAttribute('value');
+    }
+
+    if (this.hasAttribute('step')) {
+      this.step = Number(this.getAttribute('step'));
+    }
+
     /* Create control buttons*/
     if (this.hasAttribute('show-controls')) {
       /* Create decrease button */
@@ -23,13 +32,11 @@ class NumberField extends KeenElement {
       increaseButton.textContent = '+';
       this.shadowRoot.appendChild(increaseButton);
 
-      decreaseButton.addEventListener('mousedown', this._onmousedown_button.bind(this));
-      increaseButton.addEventListener('mousedown', this._onmousedown_button.bind(this));
-    }
+      decreaseButton.addEventListener('click', this._stepDown.bind(this));
+      decreaseButton.addEventListener('touchstart', this._stepDown.bind(this));
 
-    /* Set initial value */
-    if (this.hasAttribute('value')) {
-      this.value = this.getAttribute('value');
+      increaseButton.addEventListener('click', this._stepUp.bind(this));
+      increaseButton.addEventListener('touchstart', this._stepUp.bind(this));
     }
 
     this._inputElement.addEventListener('change', this._onchange_input.bind(this));
@@ -49,46 +56,49 @@ class NumberField extends KeenElement {
     this.dispatchEvent(this._changeEvent);
   }
 
-  _onmousedown_button(evt) {
-    if (evt.button !== 0) return;
+  _stepDown(evt) {
+    if (evt.type === 'click') {
+      if (evt.button !== 0) return;
+    } else if (evt.type === 'touchstart') {
+      evt.preventDefault();
+    }
 
-    const buttonId = evt.currentTarget.id;
-    const step = Number(this.step) || 1;
-    const value = Number(this.value);
+    let newValue = this.value - this.step;
+    if (this.min && newValue < this.min) {
+      newValue = this.min;
+    }
 
-    this.dispatchEvent(this._inputEvent);
+    if (this.value !== newValue) {
+      this.value = newValue;
+      this.dispatchEvent(this._inputEvent);
+      this.dispatchEvent(this._changeEvent);
+    }
+  }
 
-    if (buttonId === 'decrease-button') {
+  _stepUp(evt) {
+    if (evt.type === 'click') {
+      if (evt.button !== 0) return;
+    } else if (evt.type === 'touchstart') {
+      evt.preventDefault();
+    }
 
-      const newValue = value - step;
-      if (!this.min || newValue >= this.min) {
-        this.value = newValue;
-        this.dispatchEvent(this._changeEvent);
-      }
+    let newValue = this.value + this.step;
+    if (this.max && newValue > this.max) {
+      newValue = this.max;
+    }
 
-    } else {
-
-      const newValue = value + step;
-      if (!this.max || newValue <= this.max) {
-        this.value = newValue;
-        this.dispatchEvent(this._changeEvent);
-      }
-
+    if (this.value !== newValue) {
+      this.value = newValue;
+      this.dispatchEvent(this._inputEvent);
+      this.dispatchEvent(this._changeEvent);
     }
   }
 
   get value() {
-    return this._inputElement.value;
+    return Number(this._inputElement.value);
   }
   set value(value) {
     this._inputElement.value = value;
-  }
-
-  get step() {
-    return this.getAttribute('step');
-  }
-  set step(value) {
-    this.setAttribute('step', value);
   }
 
   get min() {
@@ -105,22 +115,21 @@ class NumberField extends KeenElement {
     this.setAttribute('max', value);
   }
 
-  template() { return html`<input type="number">`; }
+  template() { return '<input type="number">'; }
 
   styles() {
     return `
     :host {
       width: 180px;
-      display: flex;
+      display: inline-flex;
       flex-wrap: no-wrap;
-      align-item: center;
+      align-items: stretch;
+      justify-content: space-between;
       user-select: none;
       background-color: #ebedf2;
       border-radius: 5px;
       font-size: 16px;
       color: #4b5c7e;
-      padding: 10px 20px;
-      box-sizing: border-box;
     }
 
     button,
@@ -135,13 +144,11 @@ class NumberField extends KeenElement {
       padding: 0;
     }
 
-    button,
-    input::placeholder {
-
-    }
-
     button {
+      max-width: 65px;
+      flex: 1;
       color: var(--buttons-color, #929292);
+      cursor: pointer;
     }
 
     button:hover {
@@ -149,12 +156,15 @@ class NumberField extends KeenElement {
       cursor: pointer;
     }
 
-    #decrease-button { margin-right: 20px; }
-    #increase-button { margin-left: 20px; }
-
     input {
-      width: 100%;
+      flex: 2;
+      min-width: 0; // Check!!!!!!!!!
       -moz-appearance: textfield;
+      padding: 10px;
+    }
+
+    :host([show-controls]) input {
+      padding: 10px 0;
     }
 
     input::-webkit-outer-spin-button,

@@ -12,7 +12,8 @@ export class KeenElement extends HTMLElement {
       this.shadowRoot.appendChild(template.content.cloneNode(true));
 
     } else if (this.template) {
-      const template = this.template();
+      const template = document.createElement('template');
+      template.innerHTML = this.template();
 
       if (!document.adoptedStyleSheets && this.styles) {
         const styleElt = document.createElement('style');
@@ -24,14 +25,17 @@ export class KeenElement extends HTMLElement {
       this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
 
-    if (styleSheets.has(this.tagName)) {
-      const styleSheet = styleSheets.get(this.tagName);
-      this.shadowRoot.adoptedStyleSheets = [styleSheet];
-    } else if (document.adoptedStyleSheets && this.styles) {
-      const styleSheet = new CSSStyleSheet();
-      styleSheet.replaceSync(this.styles());
-      styleSheets.set(this.tagName, styleSheet);
-      this.shadowRoot.adoptedStyleSheets = [styleSheet];
+    if (document.adoptedStyleSheets) {
+      if (styleSheets.has(this.tagName)) {
+        const styleSheet = styleSheets.get(this.tagName);
+        this.shadowRoot.adoptedStyleSheets = [styleSheet];
+
+      } else if (this.styles) {
+        const styleSheet = new CSSStyleSheet();
+        styleSheet.replaceSync(this.styles());
+        styleSheets.set(this.tagName, styleSheet);
+        this.shadowRoot.adoptedStyleSheets = [styleSheet];
+      }
     }
   }
 

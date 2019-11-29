@@ -1,4 +1,4 @@
-import { KeenElement, html } from '../dependencies/keen-element/index.js';
+import { KeenElement } from '../dependencies/keen-element.js';
 
 class EventHandler extends HTMLElement {
   constructor() {
