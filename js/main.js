@@ -8,7 +8,7 @@ import { store } from './store.js';
 /*-- Cached Elements --*/
 const baseElement = document.querySelector('#metronome');
 const bpmDisplay = baseElement.querySelector('#bpm-display');
-const bpmSelector = baseElement.querySelector('#bpm-selector');
+const bpmSlider = baseElement.querySelector('#bpm-slider');
 const playButton = baseElement.querySelector('#play-button');
 
 /*-- Data --*/
@@ -33,7 +33,7 @@ function getBeatsPerMeasure() {
 
 /*-- Event Listeners --*/
 baseElement.addEventListeners({
-  'mousedown .time-signature-button': evt => {
+  'click .time-signature-button': evt => {
     const beatsPerMeasure = Number(evt.target.name[0]);
     const beatDuration = Number(evt.target.name[2]);
     const newTimeSignature = [beatsPerMeasure, beatDuration];
@@ -46,22 +46,21 @@ baseElement.addEventListeners({
     }
   },
 
-  'mousedown keen-button': evt => {
-    if ( evt.button !== 0 ) return;
+  'change #play-button': evt => {
     isPlaying ? stopMetronome() : startMetronome();
   },
 
   'change #bpm-display': () => {
     bpm = Number(bpmDisplay.value);
-    bpmSelector.value = bpmDisplay.value;
+    bpmSlider.value = bpmDisplay.value;
   },
 
-  'change #bpm-selector': () => {
-    bpm = Number(bpmSelector.value);
+  'change #bpm-slider': () => {
+    bpm = Number(bpmSlider.value);
   },
 
-  'input #bpm-selector': () => {
-    bpmDisplay.value = bpmSelector.value;
+  'input #bpm-slider': () => {
+    bpmDisplay.value = bpmSlider.value;
   }
 });
 
@@ -99,7 +98,7 @@ function checkIfTimeToSchedule() {
   }
 
   if (isPlaying) {
-    setTimeout(checkIfTimeToSchedule.bind(this), 25);
+    setTimeout(checkIfTimeToSchedule, 25);
   }
 }
 
@@ -158,6 +157,6 @@ function highlightTimeSignatureButton(timeSignature) {
 }
 
 /* Initialize */
-bpmDisplay.value = bpmSelector.value = bpm;
+bpmDisplay.value = bpmSlider.value = bpm;
 renderBeatIndicatorsBox(timeSignature[0]);
 highlightTimeSignatureButton(timeSignature);
