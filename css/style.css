@@ -93,9 +93,9 @@ main {
 
 #metronome {
   display: block;
-  width: 100%;
+  width: 100%; height: auto;
   max-width: 800px;
-  height: auto;
+  box-sizing: border-box;
   border: 8px solid #353b46;
   border-radius: 35px;
   margin: auto;
