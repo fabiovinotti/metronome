@@ -17,6 +17,8 @@ let bpm = 120;
 let timeSignature = [4,4];
 let lastExecutionTime = 0;
 let currentBeat = null;
+let lastTap = null;
+let tapTimeDistance = null;
 
 /*-- Computed Data --*/
 function getBeatDuration() {
@@ -44,6 +46,16 @@ baseElement.addEventListeners({
       renderBeatIndicatorsBox(getBeatsPerMeasure(), currentBeat);
       highlightTimeSignatureButton(timeSignature);
     }
+  },
+
+  'mousedown #tap-button': e => {
+    if (e.button == 0)
+      reactToTap();
+  },
+
+  'touchstart #tap-button': e => {
+    reactToTap();
+    e.preventDefault();
   },
 
   'change #play-button': evt => {
@@ -154,6 +166,29 @@ function highlightTimeSignatureButton(timeSignature) {
       button.classList.remove( 'selected' );
     }
   }
+}
+
+function reactToTap() {
+  const now = store.audioContext.currentTime;
+
+  if (lastTap && now - lastTap <= 6) {
+    if (tapTimeDistance)
+      tapTimeDistance = (tapTimeDistance + now - lastTap) / 2;
+    else
+      tapTimeDistance = now - lastTap;
+    setBpm(60 / tapTimeDistance);
+  }
+  else
+    tapTimeDistance = null;
+
+  lastTap = now;
+}
+
+function setBpm(value) {
+  if (value > 250)
+    value = 250;
+  bpm = Math.round(value);
+  bpmSlider.value = bpmDisplay.value = bpm;
 }
 
 /* Initialize */
