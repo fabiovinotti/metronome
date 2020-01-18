@@ -4,32 +4,41 @@ class KeenButton extends KeenElement {
   constructor() {
     super();
     this._changeEvent = new Event('change', { 'bubbles': true, 'cancelable': false });
+    this._touchStart = {}; // Coordinates pageX and pageY of touchstart event.
   }
 
   whenConnected() {
     if (this.hasAttribute('toggles')) {
-      this.addEventListener('click', evt => {
-        if (evt.button === 0) this._toggle();
-      });
 
-      this.addEventListener('touchstart', evt => {
-        this.addEventListener('touchend', evt.target._onTouchEnd);
+      this.addEventListener('touchstart', this._onTouchStart);
+      this.addEventListener('touchend', this._onTouchEnd);
+      this.addEventListener('click', e => {
+        if (e.button == 0)
+          this._toggle();
       });
     }
   }
 
-  _onTouchEnd(evt) {
-    this._toggle();
-    this.removeEventListener('touchend', this._onTouchEnd);
-    evt.preventDefault();
+  _onTouchStart(e) {
+    this._touchStart.x = e.changedTouches[0].pageX;
+    this._touchStart.y = e.changedTouches[0].pageY;
+  }
+
+  _onTouchEnd(e) {
+    const newTouchX = e.changedTouches[0].pageX;
+    const newTouchY = e.changedTouches[0].pageY;
+
+    if (Math.abs(newTouchX - this._touchStart.x) < 20 && Math.abs(newTouchY - this._touchStart.y) < 20)
+      this._toggle();
+    if (e.cancelable)
+      e.preventDefault();
   }
 
   _toggle() {
-    if (this.hasAttribute('active')) {
+    if (this.hasAttribute('active'))
       this.removeAttribute('active');
-    } else {
+    else
       this.setAttribute('active', '');
-    }
 
     this.dispatchEvent(this._changeEvent);
   }
