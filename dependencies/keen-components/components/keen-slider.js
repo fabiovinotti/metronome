@@ -6,8 +6,10 @@ class KeenSlider extends KeenElement {
     this._value = 0;
     this.min = 0;
     this.max = 100;
-    this._onSliding = this._onSliding.bind(this);
+    this._onMouseMove = this._onMouseMove.bind(this);
     this._onMouseUp = this._onMouseUp.bind(this);
+    this._displayProgress = this._displayProgress.bind(this);
+    this.pointerClientX;
 
     /* Cached Elements */
     this._progressBar = this.shadowRoot.querySelector('#progress-bar');
@@ -20,74 +22,83 @@ class KeenSlider extends KeenElement {
   }
 
   whenConnected() {
-    if (this.hasAttribute('value')) {
+    if (this.hasAttribute('value'))
       this.value = Number(this.getAttribute('value'));
-    }
 
-    if (this.hasAttribute('min')) {
+    if (this.hasAttribute('min'))
       this.min = Number(this.getAttribute('min'));
-    }
 
-    if (this.hasAttribute('max')) {
+    if (this.hasAttribute('max'))
       this.max = Number(this.getAttribute('max'));
-    }
 
     this.addEventListener('mousedown', this._onMouseDown);
     this.addEventListener('touchstart', this._onTouchStart);
-
+    this.addEventListener('touchmove', this._onTouchMove);
+    this.addEventListener('touchend', this._onTouchEnd);
+    window.addEventListener('resize', this._displayProgress);
     this._displayProgress();
   }
 
-  _onMouseDown(evt) {
-    if (evt.button !== 0) return;
-    this._onSliding(evt);
-    window.addEventListener('mousemove', this._onSliding);
+  disconnectedCallback() {
+    window.removeEventListener('resize', this._displayProgress);
+  }
+
+  _onMouseDown(e) {
+    if (e.button != 0)
+      return;
+    this._pointerClientX = e.clientX;
+    this._onSliding(e);
+    window.addEventListener('mousemove', this._onMouseMove);
     window.addEventListener('mouseup', this._onMouseUp);
   }
 
-  _onMouseUp(evt) {
-    if (evt.button !== 0) return;
-    window.removeEventListener('mousemove', this._onSliding);
+  _onMouseMove(e) {
+    this._pointerClientX = e.clientX;
+    this._onSliding(e);
+  }
+
+  _onMouseUp(e) {
+    if (e.button != 0)
+      return;
+    window.removeEventListener('mousemove', this._onMouseMove);
     window.removeEventListener('mouseup', this._onMouseUp);
     this.dispatchEvent(this._changeEvent);
   }
 
-  _onTouchStart(evt) {
-    this._onSliding(evt);
-    this.addEventListener('touchmove', this._onSliding);
-    this.addEventListener('touchend', this._onTouchEnd);
-    evt.preventDefault();
+  _onTouchStart(e) {
+    this._pointerClientX = e.changedTouches[0].clientX;
+    this._onSliding(e);
   }
 
-  _onTouchEnd() {
-    this.removeEventListener('touchmove', this._onTouchMove);
-    this.removeEventListener('touchend', this._onTouchEnd);
+  _onTouchMove(e) {
+    this._pointerClientX = e.changedTouches[0].clientX;
+    this._onSliding(e);
+    e.preventDefault();
+  }
+
+  _onTouchEnd(e) {
     this.dispatchEvent(this._changeEvent);
+    e.preventDefault();
   }
 
-  _onSliding(evt) {
+  _onSliding(e) {
     const progressBarOffset = this._progressBar.getBoundingClientRect();
     const progressMaxLenght = progressBarOffset.width - 9;
-    let pointerClientX;
-
-    if (evt.type === 'touchmove' || evt.type === 'touchstart') pointerClientX = evt.touches[0].clientX;
-    else pointerClientX = evt.clientX;
+    let newProgressLength, decimalPortion;
 
     // Compute new progress length.
-    let newProgressLength = Math.floor(pointerClientX - progressBarOffset.left);
-    if (newProgressLength < 9) {
+    newProgressLength = Math.floor(this._pointerClientX - progressBarOffset.left);
+    if (newProgressLength < 9)
       newProgressLength = 9;
-    } else if (newProgressLength > progressMaxLenght) {
+    else if (newProgressLength > progressMaxLenght)
       newProgressLength = progressMaxLenght;
-    }
 
     /* Update Value */
-    const decimalPortion = (newProgressLength - 9) / (progressMaxLenght - 9);
+    decimalPortion = (newProgressLength - 9) / (progressMaxLenght - 9);
     this._value = Math.floor(decimalPortion * (this.max - this.min) + this.min);
 
     this._updateUIElementStyles(newProgressLength);
     this.dispatchEvent(this._inputEvent);
-    if (evt.type === 'touchmove') evt.preventDefault();
   }
 
   _displayProgress() {
@@ -103,13 +114,12 @@ class KeenSlider extends KeenElement {
   }
 
   set value(newValue) {
-    if (newValue === this._value) {
+    if (newValue == this._value)
       return;
-    } else if (newValue < this.min) {
+    else if (newValue < this.min)
       newValue = this.min;
-    } else if (newValue > this.max) {
+    else if (newValue > this.max)
       newValue = this.max;
-    }
 
     this._value = newValue;
     this._displayProgress();
